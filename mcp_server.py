@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
+from sentiment_agent import analyze_sentiment
 
 app = FastAPI(title="MCP Tool Server")
 
@@ -58,6 +59,16 @@ def create_support_ticket(request: dict):
         "success": True,
         "ticket_id": ticket_id,
         "message": "Ticket créé, un agent vous contactera"
+    }
+
+@app.post("/tools/analyze_sentiment")
+def sentiment_analysis(request: dict):
+    """Analyser le sentiment d'un message"""
+    message = request.get("message", "")
+    result = analyze_sentiment(message)
+    return {
+        "success": True,
+        **result
     }
 
 if __name__ == "__main__":
